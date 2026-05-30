@@ -894,7 +894,7 @@ class UpscalerApp(QMainWindow):
                     else:
                         cuda_suffix = " + CUDA (Compatible)"
                         
-                name_fmt = f"Vulkan GPU {idx}: {gpu_name}{cuda_suffix}"
+                name_fmt = f"⚡ GPU {idx}: {gpu_name}{cuda_suffix}"
                 if is_nvidia or "amd" in gpu_name.lower():
                     name_fmt += " (Recommended)"
                 self.device_combo.addItem(name_fmt, idx)
@@ -902,10 +902,10 @@ class UpscalerApp(QMainWindow):
         
         if not added_gpus:
             cuda_suffix = " + CUDA (Active)" if has_cuda_active else " + CUDA (Compatible)"
-            self.device_combo.addItem(f"Vulkan GPU 1: Tesla V100{cuda_suffix} (Recommended)", 1)
-            self.device_combo.addItem("Vulkan GPU 0: Intel UHD Graphics 750", 0)
+            self.device_combo.addItem(f"⚡ GPU 1: Tesla V100{cuda_suffix} (Recommended)", 1)
+            self.device_combo.addItem("⚡ GPU 0: Intel UHD Graphics 750", 0)
             
-        self.device_combo.addItem("CPU Mode (Stable fallback)", -1)
+        self.device_combo.addItem("💻 CPU Mode (Stable fallback)", -1)
         
         # Set default to GPU 1 (Tesla) since it is highly stable and dedicated, or index 0 if GPU 1 is not in list
         default_idx = 0
@@ -1148,6 +1148,11 @@ class UpscalerApp(QMainWindow):
         dim_grid.addWidget(self.height_input)
         
         settings_layout.addLayout(dim_grid)
+         # Note details
+        note_lbl = QLabel("Leave both fields blank to process at model's native x4 resolution.\n"
+                          "Specifying only one scales the other will be calculated proportionally.")
+        note_lbl.setStyleSheet("color: #71717a; font-size: 11px;")
+        settings_layout.addWidget(note_lbl)
 
         # AI Model field
         model_label = QLabel("AI Model:")
@@ -1207,13 +1212,7 @@ class UpscalerApp(QMainWindow):
         self.format_combo.addItem("JPEG (.jpg)", "jpg")
         self.format_combo.addItem("PNG (.png)", "png")
         settings_layout.addWidget(self.format_combo)
-
-        # Note details
-        note_lbl = QLabel("Leave both fields blank to process at model's native x4 resolution.\n"
-                          "Specifying only one scales the other proportionally.")
-        note_lbl.setStyleSheet("color: #71717a; font-size: 11px;")
-        settings_layout.addWidget(note_lbl)
-
+        
         # Process Buttons
         settings_layout.addSpacing(10)
         self.start_btn = QPushButton("START AI UPSCALE")
@@ -1776,11 +1775,12 @@ class UpscalerApp(QMainWindow):
         event.accept()
 
     def save_settings(self):
-        """Saves current configuration parameters via QSettings."""
+        """Saves current configuration parameters via QSettings in a local INI file."""
         if hasattr(self, "_loading_settings") and self._loading_settings:
             return
             
-        settings = QSettings("Antigravity", "AIUpscalerPro")
+        ini_path = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "config.ini")
+        settings = QSettings(ini_path, QSettings.Format.IniFormat)
         settings.setValue("output_dir", self.dest_input.text())
         settings.setValue("width_input", self.width_input.text())
         settings.setValue("height_input", self.height_input.text())
@@ -1790,10 +1790,11 @@ class UpscalerApp(QMainWindow):
         settings.setValue("model_index", self.model_combo.currentIndex())
 
     def load_settings(self):
-        """Loads and applies saved configuration parameters via QSettings."""
+        """Loads and applies saved configuration parameters from a local INI file."""
         self._loading_settings = True
         try:
-            settings = QSettings("Antigravity", "AIUpscalerPro")
+            ini_path = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "config.ini")
+            settings = QSettings(ini_path, QSettings.Format.IniFormat)
             
             output_dir = settings.value("output_dir", "")
             if output_dir:

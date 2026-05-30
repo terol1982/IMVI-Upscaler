@@ -26,7 +26,7 @@ if not exist "venv\Scripts\pyinstaller.exe" (
 :: 3. Run PyInstaller build
 echo.
 echo [*] Step 2: Compiling standalone executable via PyInstaller...
-call venv\Scripts\pyinstaller.exe AI_Upscaler.spec --noconfirm
+call venv\Scripts\pyinstaller.exe IMVI-Upscaler.spec --noconfirm
 if %errorlevel% neq 0 (
     echo [ERROR] PyInstaller compilation failed.
     pause

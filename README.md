@@ -1,8 +1,11 @@
 # IMVI-Upscaler
 AI upscaler for images and vidoes
 
+#run script
+python upscaler_app.py
 
-#automatic build:
+#or
+#automatic build executable:
 ./build.bat
 
 #manual build:

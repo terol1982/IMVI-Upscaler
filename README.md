@@ -1,5 +1,5 @@
 # IMVI-Upscaler
-AI upscaler for images and vidoes
+AI upscaler for images (single or multiply) and vidoes
 
 #run script
 python upscaler_app.py

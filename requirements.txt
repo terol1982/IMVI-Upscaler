@@ -4,3 +4,6 @@ pillow==11.3.0
 moviepy==2.2.1
 realesrgan-ncnn-py==2.0.0
 PyQt6==6.11.0
+pyinstaller==6.20.0
+pyinstaller-hooks-contrib==2026.5
+

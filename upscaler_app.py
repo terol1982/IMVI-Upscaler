@@ -13,7 +13,8 @@ from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QGridLayout, QLabel, QLineEdit, QPushButton, QProgressBar,
     QFileDialog, QFrame, QCheckBox, QTextEdit, QComboBox,
-    QTableWidget, QTableWidgetItem, QHeaderView, QDialog, QScrollArea
+    QTableWidget, QTableWidgetItem, QHeaderView, QDialog, QScrollArea,
+    QLayout
 )
 from PyQt6.QtCore import Qt, QThread, pyqtSignal, QSize, QSettings
 from PyQt6.QtGui import QPixmap, QImage, QDragEnterEvent, QDropEvent, QIcon, QIntValidator
@@ -28,6 +29,7 @@ try:
 except Exception:
     HAS_MOVIEPY = False
 
+VERSION = "1.0.0"
 
 def get_model_paths():
     """Resolves the models folder path in developmental or compiled EXE mode."""
@@ -341,8 +343,7 @@ class AboutDialog(QDialog):
     
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("About AI Vision Upscaler Pro")
-        self.setFixedSize(360, 240)
+        self.setWindowTitle("About IMVI-Upscaler")
         self.setStyleSheet("""
             QDialog {
                 background-color: #121214;
@@ -363,41 +364,29 @@ class AboutDialog(QDialog):
                 color: #a1a1aa;
             }
             QLabel#AuthorName {
-                font-size: 18px;
+                font-size: 14px;
                 font-weight: bold;
                 color: #10b981;
-            }
-            QPushButton#CloseBtn {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #00b8d4, stop:1 #00f0ff);
-                color: #0c0c0e;
-                border: none;
-                border-radius: 6px;
-                padding: 6px 16px;
-                font-weight: bold;
-                font-size: 13px;
-                min-width: 80px;
-            }
-            QPushButton#CloseBtn:hover {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #00e5ff, stop:1 #33f4ff);
             }
         """)
         
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(20, 20, 20, 20)
-        layout.setSpacing(12)
+        layout.setSizeConstraint(QLayout.SizeConstraint.SetFixedSize)
+        layout.setContentsMargins(24, 24, 24, 24)
+        layout.setSpacing(14)
         
         # Cyberpunk glowing header
-        app_title = QLabel("AI VISION UPSCALER PRO", self)
+        app_title = QLabel("IMVI-Upscaler", self)
         app_title.setObjectName("AppTitle")
         app_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(app_title)
         
-        version_lbl = QLabel("Version 1.2.0", self)
+        version_lbl = QLabel(f"Version {VERSION}", self)
         version_lbl.setStyleSheet("color: #71717a; font-size: 11px; font-weight: bold;")
         version_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(version_lbl)
         
-        layout.addSpacing(10)
+        layout.addSpacing(6)
         
         # Author info
         author_layout = QHBoxLayout()
@@ -406,20 +395,38 @@ class AboutDialog(QDialog):
         author_lbl = QLabel("Author: ", self)
         author_lbl.setObjectName("AuthorInfo")
         
-        author_name = QLabel("TerOl", self)
+        author_name = QLabel("""TerOl,
+        <a href="https://github.com/terol1982/IMVI-Upscaler" style="color: #00f0ff; text-decoration: none;">github.com/terol1982/IMVI-Upscaler</a>""", self)
         author_name.setObjectName("AuthorName")
+        author_name.setOpenExternalLinks(True)
+        author_name.setTextFormat(Qt.TextFormat.RichText)
         
-        author_layout.addWidget(author_lbl)
-        author_layout.addWidget(author_name)
+        author_layout.addWidget(author_lbl, alignment=Qt.AlignmentFlag.AlignTop)
+        author_layout.addWidget(author_name, alignment=Qt.AlignmentFlag.AlignTop)
         layout.addLayout(author_layout)
         
-        layout.addStretch()
+        layout.addSpacing(10)
         
         # Close button
         btn_layout = QHBoxLayout()
         btn_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         close_btn = QPushButton("OK", self)
         close_btn.setObjectName("CloseBtn")
+        close_btn.setStyleSheet("""
+            QPushButton {
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #00b8d4, stop:1 #00f0ff);
+                color: #0c0c0e;
+                border: none;
+                border-radius: 6px;
+                padding: 6px 20px;
+                font-weight: bold;
+                font-size: 13px;
+                min-width: 80px;
+            }
+            QPushButton:hover {
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #00e5ff, stop:1 #33f4ff);
+            }
+        """)
         close_btn.setCursor(Qt.CursorShape.PointingHandCursor)
         close_btn.clicked.connect(self.accept)
         btn_layout.addWidget(close_btn)
@@ -673,7 +680,7 @@ class UpscalerApp(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("AI Vision Upscaler Pro")
+        self.setWindowTitle(f"IMVI-Upscaler - {VERSION}")
         self.setMinimumSize(920, 680)
         self.input_path = ""
         self.original_w = 0
@@ -830,7 +837,7 @@ class UpscalerApp(QMainWindow):
 
         # Header Title section
         header_layout = QHBoxLayout()
-        title_label = QLabel("AI VISION UPSCALER PRO")
+        title_label = QLabel("IMVI-Upscaler")
         title_label.setObjectName("TitleLabel")
         header_layout.addWidget(title_label)
         header_layout.addStretch()

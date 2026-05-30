@@ -11,6 +11,7 @@ python upscaler_app.py
 #manual build:
 .\venv\Scripts\pyinstaller --onefile --windowed --noconsole --name "AI_Upscaler" upscaler_app.py
 
-<img width="800" height="423" alt="image" src="https://github.com/user-attachments/assets/1fcc9fa6-891f-446e-84ee-d95c0f29ca58" />
+<img width="800" height="423" alt="image" src="https://github.com/user-attachments/assets/e79a6733-2dc9-47a4-8bb4-93d3aa1288b3" />
+
 
 
